@@ -6,10 +6,16 @@ import org.e_commerce.model.Item;
 
 public class ItemMapper {
 
+    // DTO → Model
     public static Item toModel(ItemRequestDTO dto) {
-        return new Item(dto.getId(), dto.getName(), dto.getDescription());
+        return new Item(
+                dto.id(),
+                dto.name(),
+                dto.description()
+        );
     }
 
+    // Model → Response DTO
     public static ItemResponseDTO toResponse(Item item) {
         return new ItemResponseDTO(
                 item.getId(),
