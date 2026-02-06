@@ -41,56 +41,6 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-The application will start on `http://localhost:8080`
-
-## 📡 API Endpoints
-
-### 1. Add a New Item
-- **Method**: `POST`
-- **URL**: `http://localhost:8080/items`
-- **Request Body**:
-```json
-{
-    "id": 1,
-    "name": "Laptop",
-    "description": "Dell XPS 13"
-}
-```
-- **Response**: Created item with details
-
-### 2. Get All Items
-- **Method**: `GET`
-- **URL**: `http://localhost:8080/items`
-- **Response**: List of all items
-
-### 3. Get Item by ID
-- **Method**: `GET`
-- **URL**: `http://localhost:8080/items/{id}`
-- **Response**: Specific item details
-
-### 4. Update an Item
-- **Method**: `PUT`
-- **URL**: `http://localhost:8080/items/{id}`
-- **Request Body**:
-```json
-{
-    "id": 1,
-    "name": "Updated Laptop",
-    "description": "Updated Dell XPS 13"
-}
-```
-
-### 5. Delete an Item
-- **Method**: `DELETE`
-- **URL**: `http://localhost:8080/items/{id}`
-- **Response**: Success/Failure message
-
-## 🧪 Testing with Postman
-
-1. Import the provided endpoints above into Postman
-2. Test each endpoint with sample data
-3. Verify responses match expected output
-
 ## 📁 Project Structure
 
 ```
@@ -106,6 +56,12 @@ Item-Manager/
 │   │   └── resources/
 │   │       └── application.properties
 │   └── test/
+│       ├── java/
+│       │   └── com/itemmanager/
+│       │       └──controller/     # REST Controllers
+│       │        
+│       │         
+│       │         
 └── pom.xml
 ```
 
@@ -148,6 +104,12 @@ curl -X PUT http://localhost:8080/items/1 \
 curl -X DELETE http://localhost:8080/items/1
 ```
 
+## Run Junit Test Cases
+```bash
+mvn clean install
+```
+
+
 ## 🎯 Learning Outcomes
 
 This project is perfect for understanding:
@@ -158,13 +120,15 @@ This project is perfect for understanding:
 - Request/Response handling
 - Data validation techniques
 
-## 🤝 Contributing
 
-Feel free to fork this repository and submit pull requests for any improvements.
+## Next Steps
+1. Integrating with actual persistence database [postgresql]
+2. API to add search API [fuzzy search, semantic search]
+3. JPA Auditable [created_at, created_by, updated_at, updated_by]
+4. Spring security [Basic Authentication]
+5. In-Memory cache for Reducing database calls
 
-## 📄 License
-
-This project is open source and available under the MIT License.
+---
 
 ## 👨‍💻 Author
 
@@ -172,5 +136,3 @@ This project is open source and available under the MIT License.
 - GitHub: [@Prachikhajuria29](https://github.com/Prachikhajuria29)
 
 ---
-
-**Made with ❤️ for learning and development**
