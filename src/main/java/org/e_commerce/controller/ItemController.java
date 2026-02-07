@@ -1,10 +1,12 @@
 package org.e_commerce.controller;
 
 import jakarta.validation.Valid;
-import org.e_commerce.dto.ItemRequestDTO;
+import org.e_commerce.dto.ItemCreateDTO;
+import org.e_commerce.dto.ItemUpdateDTO;
 import org.e_commerce.dto.ItemResponseDTO;
 import org.e_commerce.service.ItemService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,38 +15,49 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
-    @Autowired
-    private ItemService service;
+    private final ItemService service;
 
-    // CREATE
+    // Constructor Injection
+    public ItemController(ItemService service) {
+        this.service = service;
+    }
+
+    // CREATE → ID in BODY
     @PostMapping
-    public ItemResponseDTO addItem(@Valid @RequestBody ItemRequestDTO dto) {
-        return service.addItem(dto);
+    public ResponseEntity<ItemResponseDTO> addItem(
+            @Valid @RequestBody ItemCreateDTO dto) {
+
+        return new ResponseEntity<>(
+                service.addItem(dto),
+                HttpStatus.CREATED
+        );
     }
 
     // READ ALL
     @GetMapping
-    public List<ItemResponseDTO> getAllItems() {
-        return service.getAllItems();
+    public ResponseEntity<List<ItemResponseDTO>> getAllItems() {
+        return ResponseEntity.ok(service.getAllItems());
     }
 
     // READ BY ID
     @GetMapping("/{id}")
-    public ItemResponseDTO getItem(@PathVariable int id) {
-        return service.getItemById(id);
+    public ResponseEntity<ItemResponseDTO> getItem(@PathVariable int id) {
+        return ResponseEntity.ok(service.getItemById(id));
     }
 
-    // UPDATE
+    // UPDATE → ID in PATH ONLY
     @PutMapping("/{id}")
-    public ItemResponseDTO updateItem(@PathVariable int id,
-                                      @Valid @RequestBody ItemRequestDTO dto) {
-        return service.updateItem(id, dto);
+    public ResponseEntity<ItemResponseDTO> updateItem(
+            @PathVariable int id,
+            @Valid @RequestBody ItemUpdateDTO dto) {
+
+        return ResponseEntity.ok(service.updateItem(id, dto));
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    public String deleteItem(@PathVariable int id) {
+    public ResponseEntity<Void> deleteItem(@PathVariable int id) {
         service.deleteItem(id);
-        return "Item deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 }

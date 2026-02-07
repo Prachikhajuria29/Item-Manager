@@ -1,10 +1,13 @@
 package org.e_commerce.service;
 
-import org.e_commerce.dto.ItemRequestDTO;
+import org.e_commerce.Exception.DuplicateItemException;
+import org.e_commerce.Exception.ItemNotFoundException;
+import org.e_commerce.Mapper.ItemMapper;
+import org.e_commerce.dto.ItemCreateDTO;
+import org.e_commerce.dto.ItemUpdateDTO;
 import org.e_commerce.dto.ItemResponseDTO;
 import org.e_commerce.model.Item;
 import org.e_commerce.repository.ItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,60 +16,79 @@ import java.util.stream.Collectors;
 @Service
 public class ItemService {
 
-    @Autowired
-    private ItemRepository repo;
+    private final ItemRepository repo;
 
-    // CREATE
-    public ItemResponseDTO addItem(ItemRequestDTO dto) {
-        Item item = new Item(dto.id(), dto.name(), dto.description());
+    public ItemService(ItemRepository repo) {
+        this.repo = repo;
+    }
+
+    // CREATE  (ID in body OR auto — your choice)
+    public ItemResponseDTO addItem(ItemCreateDTO dto) {
+
+        // if you want ID from body
+        if (repo.findById(dto.id()) != null) {
+            throw new DuplicateItemException(
+                    "Item with id " + dto.id() + " already exists"
+            );
+        }
+
+        Item item = ItemMapper.toModel(dto);
         Item saved = repo.save(item);
 
-        return new ItemResponseDTO(
-                saved.getId(),
-                saved.getName(),
-                saved.getDescription()
-        );
+        return ItemMapper.toResponse(saved);
     }
 
     // READ ALL
     public List<ItemResponseDTO> getAllItems() {
         return repo.findAll()
                 .stream()
-                .map(i -> new ItemResponseDTO(
-                        i.getId(),
-                        i.getName(),
-                        i.getDescription()))
+                .map(ItemMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     // READ BY ID
     public ItemResponseDTO getItemById(int id) {
         Item item = repo.findById(id);
-        if (item == null) return null;
 
-        return new ItemResponseDTO(
-                item.getId(),
-                item.getName(),
-                item.getDescription()
-        );
+        if (item == null) {
+            throw new ItemNotFoundException(
+                    "Item with id " + id + " not found"
+            );
+        }
+
+        return ItemMapper.toResponse(item);
     }
 
-    // UPDATE
-    public ItemResponseDTO updateItem(int id, ItemRequestDTO dto) {
-        Item item = new Item(dto.id(), dto.name(), dto.description());
-        Item updated = repo.update(id, item);
+    // UPDATE  (ID ONLY FROM PATH)
+    public ItemResponseDTO updateItem(int id, ItemUpdateDTO dto) {
 
-        if (updated == null) return null;
+        Item existing = repo.findById(id);
 
-        return new ItemResponseDTO(
-                updated.getId(),
-                updated.getName(),
-                updated.getDescription()
-        );
+        if (existing == null) {
+            throw new ItemNotFoundException(
+                    "Item with id " + id + " not found"
+            );
+        }
+
+        existing.setName(dto.name());
+        existing.setDescription(dto.description());
+
+        Item updated = repo.update(id, existing);
+
+        return ItemMapper.toResponse(updated);
     }
 
     // DELETE
     public void deleteItem(int id) {
+
+        Item existing = repo.findById(id);
+
+        if (existing == null) {
+            throw new ItemNotFoundException(
+                    "Item with id " + id + " not found"
+            );
+        }
+
         repo.delete(id);
     }
 }
