@@ -91,4 +91,13 @@ public class ItemService {
 
         repo.delete(id);
     }
+
+    // SEARCH
+    public List<ItemResponseDTO> searchItems(String query) {
+        List<Item> results = repo.search(query);
+
+        return results.stream()
+                .map(ItemMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 }

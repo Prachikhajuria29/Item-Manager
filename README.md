@@ -1,28 +1,34 @@
 
 # 📦 Item Manager
 
-A simple yet powerful RESTful item management system built with Spring Boot. This application demonstrates fundamental CRUD operations and best practices for building modern Java web applications.
+A simple yet powerful item management system built with Spring Boot. This application provides both a RESTful API and a web-based UI, demonstrating fundamental CRUD operations and best practices for building modern Java web applications.
 
 ## ✨ Features
 
+### Core Features
+* ✅ **Dual Interface**: Both REST API and Modern Thymeleaf-based Web UI
 * ✅ **In-Memory Storage**: Fast, lightweight ArrayList-based data storage
-* ✅ **Input Validation**: Robust validation to ensure data integrity
-* ✅ **RESTful API**: Clean and intuitive REST endpoints
-* ✅ **Easy to Use**: Simple setup and straightforward API design
+* ✅ **Input Validation**: Robust validation with Bean Validation annotations
+* ✅ **Exception Handling**: Comprehensive error handling with custom exceptions
+* ✅ **RESTful API**: Clean and intuitive REST endpoints with proper HTTP status codes
+* ✅ **DTO Pattern**: Separate DTOs for create, update, and response operations
+* ✅ **Comprehensive Testing**: Full test coverage with MockMvc and JUnit 5
 
 ## 🛠️ Tech Stack
 
 | Technology  | Version |
-| ----------- | ------- |
-| Java        | 17      |
-| Spring Boot | 3.2.5   |
-| Build Tool  | Maven   |
+| ----------- | ----- |
+| Java        | 17 |
+| Spring Boot | 3.2.5 |
+| Thymeleaf   | 3.2.5 |
+| Build Tool  | Maven |
+| Testing     | JUnit 5, Mockito |
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-* Java 17 or higher installed
+* Java 17 or higher installed (Java 24 supported)
 * Maven installed
 
 ### Installation
@@ -34,17 +40,19 @@ git clone https://github.com/Prachikhajuria29/Item-Manager.git
 cd Item-Manager
 ```
 
-2. Build the project:
+2. Build and run tests:
 
 ```bash
 mvn clean install
 ```
 
-3. Run the application locally (optional):
+3. Run the application locally:
 
 ```bash
 mvn spring-boot:run
 ```
+
+The application will start on `http://localhost:8080`
 
 ---
 
@@ -56,7 +64,9 @@ The application is deployed on **AWS Elastic Beanstalk**:
 
 You can directly test the API using this URL.
 
-### Live API Endpoints
+### Available Endpoints
+
+#### REST API Endpoints (`/items`)
 
 | HTTP Method | Endpoint      | Description             |
 | ----------- | ------------- | ----------------------- |
@@ -65,6 +75,24 @@ You can directly test the API using this URL.
 | GET         | `/items/{id}` | Get an item by ID       |
 | PUT         | `/items/{id}` | Update an existing item |
 | DELETE      | `/items/{id}` | Delete an item by ID    |
+
+#### Web UI Endpoints (`/items-ui`)
+
+| HTTP Method | Endpoint              | Description             |
+| ----------- | --------------------- | ----------------------- |
+| GET         | `/items-ui`           | List all items (supports `?search=` query param) |
+| GET         | `/items-ui/add`       | Show add item form      |
+| POST        | `/items-ui/save`      | Save new item (with validation) |
+| GET         | `/items-ui/edit/{id}` | Show edit form          |
+| POST        | `/items-ui/update/{id}` | Update item (with validation) |
+| GET         | `/items-ui/view/{id}` | View item details       |
+| POST        | `/items-ui/delete/{id}` | Delete item (with confirmation) |
+
+**🔍 Search Example:**
+```
+http://localhost:8080/items-ui?search=laptop
+```
+Searches across item ID, name, and description fields.
 
 ---
 
@@ -120,18 +148,45 @@ mvn clean install
 Item-Manager/
 ├── src/
 │   ├── main/
-│   │   ├── java/
-│   │   │   └── com/itemmanager/
-│   │   │       ├── controller/     # REST Controllers
-│   │   │       ├── service/        # Business Logic
-│   │   │       ├── model/          # Entity Classes
-│   │   │       └── Application.java
+│   │   ├── java/org/e_commerce/
+│   │   │   ├── controller/
+│   │   │   │   ├── ItemController.java        # REST API Controller
+│   │   │   │   └── ItemViewController.java    # Thymeleaf UI Controller
+│   │   │   ├── service/
+│   │   │   │   └── ItemService.java           # Business Logic
+│   │   │   ├── repository/
+│   │   │   │   └── ItemRepository.java        # In-Memory Data Store
+│   │   │   ├── model/
+│   │   │   │   └── Item.java                  # Domain Entity
+│   │   │   ├── dto/
+│   │   │   │   ├── ItemCreateDTO.java         # Create Request DTO
+│   │   │   │   ├── ItemUpdateDTO.java         # Update Request DTO
+│   │   │   │   └── ItemResponseDTO.java       # Response DTO
+│   │   │   ├── Mapper/
+│   │   │   │   └── ItemMapper.java            # DTO-Entity Mapper
+│   │   │   ├── Exception/
+│   │   │   │   ├── ApiExceptionHandler.java   # REST API Exception Handler
+│   │   │   │   ├── UiExceptionHandler.java    # UI Exception Handler
+│   │   │   │   ├── ItemNotFoundException.java
+│   │   │   │   ├── DuplicateItemException.java
+│   │   │   │   └── ApplicationException.java
+│   │   │   └── Application.java
 │   │   └── resources/
+│   │       ├── static/
+│   │       │   └── css/
+│   │       │       └── style.css              # Modern UI Styling
+│   │       ├── templates/
+│   │       │   ├── layout.html                # Reusable Layout Fragments
+│   │       │   ├── items.html                 # Item List + Search
+│   │       │   ├── add-item.html              # Add Item Form
+│   │       │   ├── edit-item.html             # Edit Item Form
+│   │       │   ├── view-item.html             # Item Detail View
+│   │       │   └── error.html                 # Error Page
 │   │       └── application.properties
 │   └── test/
-│       ├── java/
-│       │   └── com/itemmanager/
-│       │       └── controller/     # REST Controllers
+│       └── java/org/e_commerce/
+│           └── controller/
+│               └── ItemControllerTest.java    # Unit Tests
 └── pom.xml
 ```
 
@@ -139,34 +194,33 @@ Item-Manager/
 
 ## 💡 Key Concepts Demonstrated
 
+### Backend Architecture
 * **Spring Boot Fundamentals**: Project setup and configuration
 * **REST API Design**: Best practices for API endpoints
 * **CRUD Operations**: Complete Create, Read, Update, Delete functionality
-* **Input Validation**: Data validation before processing
-* **In-Memory Storage**: ArrayList implementation for data persistence (Note: This is not persistent across restarts)
+* **Input Validation**: Bean Validation with `@Valid` annotations
+* **Exception Handling**: Dual exception handlers for API vs UI
+* **DTO Pattern**: Separate DTOs for different operations
+* **In-Memory Storage**: ArrayList implementation (Note: Not persistent across restarts)
 
+### Frontend Implementation
+* **Thymeleaf Templates**: Server-side rendering with fragments and layouts
 ---
 
-## 🎯 Learning Outcomes
+## 🔮 Next Steps / Planned Features
 
-This project is perfect for understanding:
+### High Priority
+1. Better Search Functionality (multi-field search, partial matches)
+2. Pagination for large item lists
+3. Sort functionality (by ID, name, date)
+4. Export/Import items (CSV, JSON)
 
-* Spring Boot application structure
-* RESTful API design patterns
-* CRUD operations implementation
-* HTTP methods and status codes
-* Request/Response handling
-* Data validation techniques
-
----
-
-## Next Steps
-
-1. Integrating with actual persistence database [PostgreSQL]
-2. Adding search API [fuzzy search, semantic search]
-3. JPA Auditable [created_at, created_by, updated_at, updated_by]
-4. Spring security [Basic Authentication]
-5. In-Memory cache for reducing database calls
+### Future Enhancements
+1. **Database Integration**: PostgreSQL with JPA/Hibernate
+2. **Advanced Search**: Fuzzy search, semantic search
+3. **Audit Fields**: JPA Auditable [created_at, created_by, updated_at, updated_by]
+4. **Security**: Spring Security with Basic/JWT Authentication
+5. **Caching**: Redis or in-memory cache for performance
 
 ---
 

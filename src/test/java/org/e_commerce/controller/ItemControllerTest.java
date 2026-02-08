@@ -16,6 +16,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -163,5 +166,63 @@ class ItemControllerTest {
         mockMvc.perform(delete("/items/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Item with id 1 not found"));
+    }
+
+    // --------- SEARCH ITEMS SUCCESS ----------
+    @Test
+    void searchItems_withResults_shouldReturn200() throws Exception {
+        ItemResponseDTO item1 = new ItemResponseDTO(1, "Laptop", "Gaming Laptop");
+        ItemResponseDTO item2 = new ItemResponseDTO(2, "Desktop", "Gaming Desktop");
+
+        Mockito.when(service.searchItems("Gaming"))
+                .thenReturn(Arrays.asList(item1, item2));
+
+        mockMvc.perform(get("/items/search")
+                        .param("q", "Gaming"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Laptop"))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].name").value("Desktop"));
+    }
+
+    // --------- SEARCH ITEMS NO RESULTS ----------
+    @Test
+    void searchItems_noResults_shouldReturnEmptyList() throws Exception {
+        Mockito.when(service.searchItems("NonExistent"))
+                .thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/items/search")
+                        .param("q", "NonExistent"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    // --------- SEARCH ITEMS CASE INSENSITIVE ----------
+    @Test
+    void searchItems_caseInsensitive_shouldReturn200() throws Exception {
+        ItemResponseDTO item = new ItemResponseDTO(1, "Laptop", "Gaming Laptop");
+
+        Mockito.when(service.searchItems("laptop"))
+                .thenReturn(Collections.singletonList(item));
+
+        mockMvc.perform(get("/items/search")
+                        .param("q", "laptop"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("Laptop"));
+    }
+
+    // --------- SEARCH ITEMS EMPTY QUERY ----------
+    @Test
+    void searchItems_emptyQuery_shouldReturnEmptyList() throws Exception {
+        Mockito.when(service.searchItems(""))
+                .thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/items/search")
+                        .param("q", ""))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 }

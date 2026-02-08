@@ -1,35 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Edit Item</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{layout :: head('Edit Item')}"></head>
 <body>
 
-<div class="form-box">
-    <h2>Edit Item</h2>
+<nav th:replace="~{layout :: navbar}"></nav>
 
-    <form th:action="@{'/items-ui/update/' + ${item.id}}" method="post">
+<div class="form-container">
+    <div class="form-box">
+        <h2>✏️ Edit Item</h2>
 
-        <!-- Hidden ID -->
-        <input type="hidden" name="id" th:value="${item.id}">
+        <form th:action="@{'/items-ui/update/' + ${item.id}}" th:object="${item}" method="post">
 
-        <label>Name:</label>
-        <input type="text"
-               name="name"
-               th:value="${item.name}"
-               required>
+            <!-- ID Display (Read-only) -->
+            <div class="form-group">
+                <label>Item ID</label>
+                <input type="text"
+                       th:value="${item.id}"
+                       class="form-control"
+                       readonly
+                       style="background: #f0f0f0; cursor: not-allowed;">
+                <small class="form-help">Item ID cannot be changed</small>
+            </div>
 
-        <label>Description:</label>
-        <input type="text"
-               name="description"
-               th:value="${item.description}"
-               required>
+            <!-- Name Field -->
+            <div class="form-group">
+                <label for="name">Item Name *</label>
+                <input type="text"
+                       id="name"
+                       th:field="*{name}"
+                       placeholder="Enter item name"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('name')} ? 'error' : ''">
+                <span class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</span>
+            </div>
 
-        <button type="submit" class="btn update">Update</button>
-    </form>
+            <!-- Description Field -->
+            <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description"
+                          th:field="*{description}"
+                          placeholder="Enter item description"
+                          class="form-control"
+                          rows="4"
+                          th:classappend="${#fields.hasErrors('description')} ? 'error' : ''"></textarea>
+                <span class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description error</span>
+            </div>
 
+            <!-- Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="btn update">
+                    <span class="btn-icon">💾</span> Update Item
+                </button>
+                <a th:href="@{/items-ui}" class="btn cancel">
+                    <span class="btn-icon">✕</span> Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
 </div>
+
+<footer th:replace="~{layout :: footer}"></footer>
 
 </body>
 </html>
