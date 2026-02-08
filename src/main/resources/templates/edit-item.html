@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Item</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="form-box">
+    <h2>Edit Item</h2>
+
+    <form th:action="@{'/items-ui/update/' + ${item.id}}" method="post">
+
+        <!-- Hidden ID -->
+        <input type="hidden" name="id" th:value="${item.id}">
+
+        <label>Name:</label>
+        <input type="text"
+               name="name"
+               th:value="${item.name}"
+               required>
+
+        <label>Description:</label>
+        <input type="text"
+               name="description"
+               th:value="${item.description}"
+               required>
+
+        <button type="submit" class="btn update">Update</button>
+    </form>
+
+</div>
+
+</body>
+</html>

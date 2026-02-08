@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="form-box">
+    <h2>Oops 😕</h2>
+
+    <p style="text-align:center; margin:15px 0; font-size:16px;">
+        <span th:text="${message}">Item not found</span>
+    </p>
+
+    <a class="btn view" th:href="@{/items-ui}">
+        Go Back
+    </a>
+</div>
+
+</body>
+</html>

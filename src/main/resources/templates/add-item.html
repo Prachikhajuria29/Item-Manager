@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Item</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="form-box">
+    <h2>Add Item</h2>
+
+    <form th:action="@{/items-ui/save}" method="post">
+
+        <input type="number" name="id" placeholder="ID" />
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="text" name="description" placeholder="Description" required />
+
+        <button class="btn save" type="submit">Save</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Item</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="form-box">
+    <h2>Item Details</h2>
+
+    <p><b>ID:</b> <span th:text="${item.id}"></span></p>
+    <p><b>Name:</b> <span th:text="${item.name}"></span></p>
+    <p><b>Description:</b> <span th:text="${item.description}"></span></p>
+
+    <a class="btn add" th:href="@{/items-ui}">Back</a>
+</div>
+
+</body>
+</html>

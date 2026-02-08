@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Items</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h2>Item List</h2>
+
+<a class="btn add" th:href="@{/items-ui/add}">Add Item</a>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Action</th>
+    </tr>
+
+    <tr th:each="item : ${items}">
+        <td th:text="${item.id}"></td>
+        <td th:text="${item.name}"></td>
+        <td th:text="${item.description}"></td>
+        <td>
+            <!-- VIEW -->
+            <a class="btn view"
+               th:href="@{'/items-ui/view/' + ${item.id}}">
+                View
+            </a>
+
+
+            <!-- UPDATE -->
+            <a class="btn update"
+               th:href="@{'/items-ui/edit/' + ${item.id}}">
+                Update
+            </a>
+
+
+            <!-- DELETE -->
+            <a class="btn delete"
+               th:href="@{'/items-ui/delete/' + ${item.id}}">
+                Delete
+            </a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
