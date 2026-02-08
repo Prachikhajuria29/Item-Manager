@@ -1,20 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>View Item</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{layout :: head('Item Details')}"></head>
 <body>
 
-<div class="form-box">
-    <h2>Item Details</h2>
+<nav th:replace="~{layout :: navbar}"></nav>
 
-    <p><b>ID:</b> <span th:text="${item.id}"></span></p>
-    <p><b>Name:</b> <span th:text="${item.name}"></span></p>
-    <p><b>Description:</b> <span th:text="${item.description}"></span></p>
+<div class="form-container">
+    <div class="view-box">
+        <h2>📋 Item Details</h2>
 
-    <a class="btn add" th:href="@{/items-ui}">Back</a>
+        <div class="detail-card">
+            <div class="detail-row">
+                <span class="detail-label">Item ID:</span>
+                <span class="detail-value" th:text="${item.id}">1</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Item Name:</span>
+                <span class="detail-value" th:text="${item.name}">Sample Item</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Description:</span>
+                <span class="detail-value" th:text="${item.description}">Sample description</span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a class="btn edit" th:href="@{'/items-ui/edit/' + ${item.id}}">
+                <span class="btn-icon">✏️</span> Edit Item
+            </a>
+            <a class="btn view" th:href="@{/items-ui}">
+                <span class="btn-icon">←</span> Back to List
+            </a>
+        </div>
+    </div>
 </div>
+
+<footer th:replace="~{layout :: footer}"></footer>
 
 </body>
 </html>

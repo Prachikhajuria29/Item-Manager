@@ -57,4 +57,35 @@ public class ItemRepository {
     public void clear() {
         items.clear();
     }
+
+    // SEARCH ITEMS by name or description using pattern
+    public List<Item> search(String pattern) {
+        if (pattern == null || pattern.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return items.stream()
+                .filter(item -> matchesPattern(item, pattern))
+                .toList();
+    }
+
+    /**
+     * Checks if an item matches the search pattern
+     * Searches in both name and description fields
+     */
+    private boolean matchesPattern(Item item, String pattern) {
+        // Search in name
+        if (item.getName() != null &&
+            org.e_commerce.util.KMPSearch.contains(item.getName(), pattern)) {
+            return true;
+        }
+
+        // Search in description
+        if (item.getDescription() != null &&
+            org.e_commerce.util.KMPSearch.contains(item.getDescription(), pattern)) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -1,50 +1,117 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Items</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{layout :: head('Item List')}"></head>
 <body>
 
-<h2>Item List</h2>
+<nav th:replace="~{layout :: navbar}"></nav>
 
-<a class="btn add" th:href="@{/items-ui/add}">Add Item</a>
+<div class="container">
+    <h1>Item Manager</h1>
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Action</th>
-    </tr>
+    <!-- Flash Messages -->
+    <div th:replace="~{layout :: flash-message}"></div>
 
-    <tr th:each="item : ${items}">
-        <td th:text="${item.id}"></td>
-        <td th:text="${item.name}"></td>
-        <td th:text="${item.description}"></td>
-        <td>
-            <!-- VIEW -->
-            <a class="btn view"
-               th:href="@{'/items-ui/view/' + ${item.id}}">
-                View
+    <!-- Search Bar -->
+    <div th:unless="${#lists.isEmpty(items) and searchQuery == null}" class="search-container">
+        <form th:action="@{/items-ui}" method="get" class="search-form">
+            <div class="search-input-wrapper">
+                <input type="text"
+                       name="search"
+                       th:value="${searchQuery}"
+                       placeholder="🔍 Search by ID, name, or description..."
+                       class="search-input">
+                <button type="submit" class="btn search-btn">Search</button>
+                <a th:if="${searchQuery != null}"
+                   th:href="@{/items-ui}"
+                   class="btn clear-btn"
+                   title="Clear search">
+                    ✕ Clear
+                </a>
+            </div>
+        </form>
+
+        <!-- Search Results Info -->
+        <div th:if="${searchQuery != null}" class="search-info">
+            <span th:if="${searchResultCount > 0}" class="search-results-text">
+                Found <strong th:text="${searchResultCount}">0</strong>
+                <span th:text="${searchResultCount == 1 ? 'item' : 'items'}">items</span>
+                matching "<strong th:text="${searchQuery}">search</strong>"
+            </span>
+            <span th:if="${searchResultCount == 0}" class="search-no-results">
+                No items found matching "<strong th:text="${searchQuery}">search</strong>"
+            </span>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${#lists.isEmpty(items) and searchQuery == null}" class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h2>No Items Yet</h2>
+        <p>Start by adding your first item to get organized!</p>
+        <a class="btn add" th:href="@{/items-ui/add}">
+            <span class="btn-icon">+</span> Add Your First Item
+        </a>
+    </div>
+
+    <!-- Empty Search Results State -->
+    <div th:if="${#lists.isEmpty(items) and searchQuery != null}" class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h2>No Results Found</h2>
+        <p>We couldn't find any items matching "<strong th:text="${searchQuery}">search</strong>"</p>
+        <a class="btn view" th:href="@{/items-ui}">
+            <span class="btn-icon">←</span> View All Items
+        </a>
+    </div>
+
+    <!-- Items Table -->
+    <div th:unless="${#lists.isEmpty(items)}" class="table-container">
+        <div class="table-header">
+            <h2>
+                <span th:if="${searchQuery == null}">All Items</span>
+                <span th:if="${searchQuery != null}">Search Results</span>
+                (<span th:text="${#lists.size(items)}">0</span>)
+            </h2>
+            <a class="btn add" th:href="@{/items-ui/add}">
+                <span class="btn-icon">+</span> Add Item
             </a>
+        </div>
 
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${items}">
+                    <td th:text="${item.id}" class="td-id"></td>
+                    <td th:text="${item.name}" class="td-name"></td>
+                    <td th:text="${item.description}" class="td-description"></td>
+                    <td class="td-actions">
+                        <a class="btn view" th:href="@{'/items-ui/view/' + ${item.id}}" title="View Details">
+                            👁 View
+                        </a>
+                        <a class="btn edit" th:href="@{'/items-ui/edit/' + ${item.id}}" title="Edit Item">
+                            ✏️ Edit
+                        </a>
+                        <form th:action="@{'/items-ui/delete/' + ${item.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn delete"
+                                    onclick="return confirm('Are you sure you want to delete this item?')"
+                                    title="Delete Item">
+                                🗑 Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-            <!-- UPDATE -->
-            <a class="btn update"
-               th:href="@{'/items-ui/edit/' + ${item.id}}">
-                Update
-            </a>
-
-
-            <!-- DELETE -->
-            <a class="btn delete"
-               th:href="@{'/items-ui/delete/' + ${item.id}}">
-                Delete
-            </a>
-        </td>
-    </tr>
-</table>
+<footer th:replace="~{layout :: footer}"></footer>
 
 </body>
 </html>

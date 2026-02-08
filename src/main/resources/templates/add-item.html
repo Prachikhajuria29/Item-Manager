@@ -1,23 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Add Item</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{layout :: head('Add New Item')}"></head>
 <body>
 
-<div class="form-box">
-    <h2>Add Item</h2>
+<nav th:replace="~{layout :: navbar}"></nav>
 
-    <form th:action="@{/items-ui/save}" method="post">
+<div class="form-container">
+    <div class="form-box">
+        <h2>📝 Add New Item</h2>
 
-        <input type="number" name="id" placeholder="ID" />
-        <input type="text" name="name" placeholder="Name" required />
-        <input type="text" name="description" placeholder="Description" required />
+        <form th:action="@{/items-ui/save}" th:object="${item}" method="post">
 
-        <button class="btn save" type="submit">Save</button>
-    </form>
+            <!-- ID Field -->
+            <div class="form-group">
+                <label for="id">Item ID *</label>
+                <input type="number"
+                       id="id"
+                       th:field="*{id}"
+                       placeholder="Enter unique item ID"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('id')} ? 'error' : ''">
+                <span class="error-message" th:if="${#fields.hasErrors('id')}" th:errors="*{id}">ID error</span>
+            </div>
+
+            <!-- Name Field -->
+            <div class="form-group">
+                <label for="name">Item Name *</label>
+                <input type="text"
+                       id="name"
+                       th:field="*{name}"
+                       placeholder="Enter item name"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('name')} ? 'error' : ''">
+                <span class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</span>
+            </div>
+
+            <!-- Description Field -->
+            <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description"
+                          th:field="*{description}"
+                          placeholder="Enter item description"
+                          class="form-control"
+                          rows="4"
+                          th:classappend="${#fields.hasErrors('description')} ? 'error' : ''"></textarea>
+                <span class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description error</span>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="btn save">
+                    <span class="btn-icon">💾</span> Save Item
+                </button>
+                <a th:href="@{/items-ui}" class="btn cancel">
+                    <span class="btn-icon">✕</span> Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
 </div>
+
+<footer th:replace="~{layout :: footer}"></footer>
 
 </body>
 </html>

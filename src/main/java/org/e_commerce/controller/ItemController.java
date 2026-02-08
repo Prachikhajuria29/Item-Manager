@@ -60,4 +60,11 @@ public class ItemController {
         service.deleteItem(id);
         return ResponseEntity.noContent().build();
     }
+
+    // SEARCH
+    @GetMapping("/search")
+    public ResponseEntity<List<ItemResponseDTO>> searchItems(
+            @RequestParam(name = "q") String query) {
+        return ResponseEntity.ok(service.searchItems(query));
+    }
 }

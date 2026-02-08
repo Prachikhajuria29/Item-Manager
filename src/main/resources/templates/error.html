@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Error</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{layout :: head('Error')}"></head>
 <body>
 
-<div class="form-box">
-    <h2>Oops 😕</h2>
+<nav th:replace="~{layout :: navbar}"></nav>
 
-    <p style="text-align:center; margin:15px 0; font-size:16px;">
-        <span th:text="${message}">Item not found</span>
-    </p>
+<div class="form-container">
+    <div class="error-box">
+        <div class="error-icon"
+             th:classappend="${errorType == 'warning' ? 'warning' : 'error'}">
+            <span th:text="${errorType == 'warning' ? '⚠️' : '❌'}">⚠️</span>
+        </div>
 
-    <a class="btn view" th:href="@{/items-ui}">
-        Go Back
-    </a>
+        <h2 th:text="${errorTitle} ?: 'Oops!'">Error</h2>
+
+        <p class="error-description" th:text="${errorMessage} ?: 'Something went wrong!'">
+            Error message goes here
+        </p>
+
+        <div class="form-actions">
+            <a class="btn view" th:href="@{/items-ui}">
+                <span class="btn-icon">←</span> Go Back to Items
+            </a>
+        </div>
+    </div>
 </div>
+
+<footer th:replace="~{layout :: footer}"></footer>
 
 </body>
 </html>

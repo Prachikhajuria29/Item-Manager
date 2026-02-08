@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Item Manager</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- Navigation Bar Fragment -->
+<nav th:fragment="navbar" class="navbar">
+    <div class="nav-container">
+        <a th:href="@{/items-ui}" class="nav-logo">
+            <span class="logo-icon">📦</span>
+            Item Manager
+        </a>
+        <div class="nav-menu">
+            <a th:href="@{/items-ui}" class="nav-link">All Items</a>
+            <a th:href="@{/items-ui/add}" class="nav-link-add">+ Add Item</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Flash Message Fragment -->
+<div th:fragment="flash-message" th:if="${message}" class="flash-container">
+    <div th:class="${'flash-message flash-' + (messageType ?: 'info')}">
+        <span class="flash-icon" th:text="${messageType == 'success' ? '✓' : messageType == 'error' ? '✕' : 'ℹ'}">ℹ</span>
+        <span th:text="${message}">Message</span>
+    </div>
+</div>
+
+<!-- Footer Fragment -->
+<footer th:fragment="footer" class="footer">
+    <p>&copy; 2026 Item Manager | Built with Spring Boot & Thymeleaf</p>
+</footer>
+
+</body>
+</html>

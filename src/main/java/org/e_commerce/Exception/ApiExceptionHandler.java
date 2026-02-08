@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice(basePackages = "org.e_commerce.controller.api")
+@RestControllerAdvice(assignableTypes = org.e_commerce.controller.ItemController.class)
 public class ApiExceptionHandler {
 
     // VALIDATION EXCEPTION
